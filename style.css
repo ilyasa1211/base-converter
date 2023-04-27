@@ -1,0 +1,39 @@
+body {
+  --background: rgb(46, 46, 46);
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100svh;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+main {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+}
+
+main>* {
+  background: var(--bg, var(--background));
+}
+
+input {
+  outline: none;
+  border: none;
+  direction: rtl;
+  padding: 1rem;
+  font-size: 1rem;
+}
+
+label {
+  color: black;
+  text-transform: capitalize;
+  display: flex;
+  align-items: center;
+  padding-inline: 1rem;
+}
+
+input:hover,
+label:hover {
+  opacity: .7;
+}
