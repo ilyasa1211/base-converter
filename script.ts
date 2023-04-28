@@ -15,8 +15,8 @@ CONVERTER.forEach(function (converter, index) {
   label.style.setProperty("--bg", COLOR[index]);
   input.id = converter;
   input.placeholder = "0";
-  input.onkeydown = (event) => window.keydown(event, converter);
-  input.onkeyup = window.keyup;
+  input.onkeydown = (event) => validateInput(event, converter);
+  input.onkeyup = window.calculate;
   MAIN.appendChild(input);
   MAIN.appendChild(label);
 });
@@ -30,47 +30,39 @@ function convert(
   return Number(converted).toString(base);
 }
 
-function keyup(event: KeyboardEvent): void {
+function calculate(event: KeyboardEvent): void {
   let target = <HTMLInputElement> event.target;
-  if (!target.value) return;
+  const inputField = { value: target.value, id: target.id };
+  if (!inputField.value) inputField.value = "0";
   INPUTS.forEach(function (input) {
     let toBase = input.id;
     if (input.id === target.id) return;
-    (<HTMLInputElement> input).value = convert(target, toBase);
+    (<HTMLInputElement> input).value = convert(inputField, toBase);
   });
 }
-function keydown(event: KeyboardEvent, converter: string): void {
-  var validInput: RegExp;
-  var validInputPattern = /backspace|arrow+|control|delete/gi;
+function validateInput(event: KeyboardEvent, converter: string): void {
+  let validInput: RegExp;
+  let target = <HTMLInputElement> event.target;
+  target.value = target.value.replace(/^0+/, "");
   switch (converter.toLowerCase()) {
     case "hexadecimal":
-      validInput = /[\da-f]/gi;
-      validInput = new RegExp(
-        validInput.source + "|" + validInputPattern.source,
-        "gi",
-      );
+      validInput = addInput(/[\da-f]/);
       break;
     case "binary":
-      validInput = /[0-1]/gi;
-      validInput = new RegExp(
-        validInput.source + "|" + validInputPattern.source,
-        "gi",
-      );
+      validInput = addInput(/[0-1]/);
       break;
     case "octal":
-      validInput = /[0-7]/gi;
-      validInput = new RegExp(
-        validInput.source + "|" + validInputPattern.source,
-        "gi",
-      );
+      validInput = addInput(/[0-7]/);
       break;
     default:
-      validInput = /\d/gi;
-      validInput = new RegExp(
-        validInput.source + "|" + validInputPattern.source,
-        "gi",
-      );
+      validInput = addInput(/\d/);
   }
-  var isValid = validInput.test(event.key);
+  let isValid = validInput.test(event.key);
   if (!isValid) event.preventDefault();
+}
+
+function addInput(input: RegExp | string) {
+  const otherInput = /backspace|arrow+|control|delete/gi;
+  let finalInput: string = (input instanceof RegExp) ? input.source : input;
+  return new RegExp(finalInput + "|" + otherInput.source, "gi");
 }
