@@ -1,11 +1,13 @@
 const MAIN = document.querySelector("main");
-const INPUTS = document.querySelectorAll("main > input");
+const INPUTS = document.querySelectorAll<HTMLInputElement>("main > input");
+const INFO = document.querySelector<HTMLParagraphElement>("header > p");
 const CONVERTER = ["decimal", "octal", "hexadecimal", "binary"];
 const CONVERTER_BASE = [10, 8, 16, 2];
 const PREFIX = ["", "0o", "0x", "0b"];
 const COLOR = ["#DDFFBB", "#C7E9B0", "#B3C99C", "#A4BC92"];
+var timeId: number = 0;
 
-CONVERTER.forEach(function (converter, index) {
+CONVERTER.forEach(function (converter, index): void {
   if (!MAIN) throw new Error("Missing main element in HTML body");
   if (!INPUTS) throw new Error("Missing input element in main element");
   var label = document.createElement("label");
@@ -13,6 +15,7 @@ CONVERTER.forEach(function (converter, index) {
   label.htmlFor = converter;
   label.innerText = converter;
   label.style.setProperty("--bg", COLOR[index]);
+  label.onclick = () => window.copy(input);
   input.id = converter;
   input.placeholder = "0";
   input.onkeydown = (event) => validateInput(event, converter);
@@ -20,6 +23,14 @@ CONVERTER.forEach(function (converter, index) {
   MAIN.appendChild(input);
   MAIN.appendChild(label);
 });
+
+function copy(input: HTMLInputElement): void {
+  clearTimeout(window.timeId);
+  let info = INFO as HTMLParagraphElement;
+  window.navigator.clipboard.writeText(input.value);
+  info.style.display = "block";
+  window.timeId = window.setTimeout(() => (info.style.display = "none"), 3_000);
+}
 
 function convert(
   { value, id: converter }: { value: string; id: string },
@@ -41,6 +52,12 @@ function calculate(event: KeyboardEvent): void {
   });
 }
 function validateInput(event: KeyboardEvent, converter: string): void {
+  if (
+    event.ctrlKey &&
+    (event.key === "v" || event.key === "c" || event.key === "a")
+  ) {
+    return;
+  }
   let validInput: RegExp;
   let target = <HTMLInputElement> event.target;
   target.value = target.value.replace(/^0+/, "");
@@ -63,6 +80,6 @@ function validateInput(event: KeyboardEvent, converter: string): void {
 
 function addInput(input: RegExp | string) {
   const otherInput = /backspace|arrow+|control|delete/gi;
-  let finalInput: string = (input instanceof RegExp) ? input.source : input;
+  let finalInput: string = input instanceof RegExp ? input.source : input;
   return new RegExp(finalInput + "|" + otherInput.source, "gi");
 }

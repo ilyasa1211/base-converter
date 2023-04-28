@@ -1,9 +1,11 @@
 const MAIN = document.querySelector("main");
 const INPUTS = document.querySelectorAll("main > input");
+const INFO = document.querySelector("header > p");
 const CONVERTER = ["decimal", "octal", "hexadecimal", "binary"];
 const CONVERTER_BASE = [10, 8, 16, 2];
 const PREFIX = ["", "0o", "0x", "0b"];
 const COLOR = ["#DDFFBB", "#C7E9B0", "#B3C99C", "#A4BC92"];
+var timeId = 0;
 CONVERTER.forEach(function (converter, index) {
     if (!MAIN)
         throw new Error("Missing main element in HTML body");
@@ -14,6 +16,7 @@ CONVERTER.forEach(function (converter, index) {
     label.htmlFor = converter;
     label.innerText = converter;
     label.style.setProperty("--bg", COLOR[index]);
+    label.onclick = () => window.copy(input);
     input.id = converter;
     input.placeholder = "0";
     input.onkeydown = (event) => validateInput(event, converter);
@@ -21,6 +24,13 @@ CONVERTER.forEach(function (converter, index) {
     MAIN.appendChild(input);
     MAIN.appendChild(label);
 });
+function copy(input) {
+    clearTimeout(window.timeId);
+    let info = INFO;
+    window.navigator.clipboard.writeText(input.value);
+    info.style.display = "block";
+    window.timeId = window.setTimeout(() => info.style.display = "none", 3000);
+}
 function convert({ value, id: converter }, to) {
     let converted = PREFIX[CONVERTER.indexOf(converter)].concat(value);
     let base = CONVERTER_BASE[CONVERTER.indexOf(to)];
@@ -39,6 +49,9 @@ function calculate(event) {
     });
 }
 function validateInput(event, converter) {
+    if (event.ctrlKey &&
+        (event.key === "v" || event.key === "c" || event.key === "a"))
+        return;
     let validInput;
     let target = event.target;
     target.value = target.value.replace(/^0+/, "");

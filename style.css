@@ -7,6 +7,14 @@ body {
   height: 100svh;
   font-family: 'Courier New', Courier, monospace;
 }
+header > p {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
 
 main {
   display: grid;
@@ -26,14 +34,42 @@ input {
 }
 
 label {
+  position: relative;
   color: black;
   text-transform: capitalize;
   display: flex;
   align-items: center;
   padding-inline: 1rem;
+  cursor: pointer;
+}
+
+label::before {
+  content: "";
+  position: absolute;
+  left: 100%;
+  border: 5px solid;
+  border-color: transparent white transparent transparent;
+  aspect-ratio: 1/1;
+  display: none;
+}
+
+label::after {
+  content: "Click to copy";
+  font-size: 10px;
+  width: 100%;
+  color: white;
+  margin-left: 20px;
+  position: absolute;
+  left: 100%;
+  display: none;
 }
 
 input:hover,
 label:hover {
   opacity: .7;
+}
+
+label:hover::before,
+label:hover::after {
+  display: block;
 }
