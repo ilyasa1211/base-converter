@@ -1,0 +1,84 @@
+body {
+	--background: rgb(46, 46, 46);
+	margin: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	font-family: "Courier New", Courier, monospace;
+	background-color: var(--background);
+}
+#header > p {
+	width: 100%;
+	text-align: center;
+	color: white;
+	visibility: hidden;
+}
+
+#main {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	justify-content: space-between;
+}
+
+#main > div {
+	display: flex;
+	gap: 10px;
+}
+
+#main > div > * {
+	background: var(--bg, var(--background));
+}
+
+input {
+	/* outline: none; */
+	/* border-radius: 50px; */
+	/* direction: rtl; */
+	outline-color: yellow;
+	border-color: white;
+	padding: 1rem;
+	font-size: 1rem;
+	color: white;
+}
+
+label {
+	position: relative;
+	color: black;
+	text-transform: capitalize;
+	display: flex;
+	align-items: center;
+	padding-inline: 1rem;
+	cursor: pointer;
+}
+
+label::before {
+	content: "";
+	position: absolute;
+	left: 100%;
+	border: 5px solid;
+	border-color: transparent white transparent transparent;
+	aspect-ratio: 1 / 1;
+	display: none;
+}
+
+label::after {
+	content: "Click to copy";
+	font-size: 10px;
+	width: 100%;
+	color: white;
+	margin-left: 20px;
+	position: absolute;
+	left: 100%;
+	display: none;
+}
+
+input:hover,
+label:hover {
+	opacity: 0.7;
+}
+
+label:hover::before,
+label:hover::after {
+	display: block;
+}
