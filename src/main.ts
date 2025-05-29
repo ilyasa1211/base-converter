@@ -8,69 +8,69 @@ import { copyContentToClipboard } from "./utitilies/common";
 import { isImplHasInputValidation } from "./validators/input";
 
 export default class Main {
-	private inputRegistry: HTMLInputElement[] = [];
-	private converters: Array<BaseConverter> = [];
+  private inputRegistry: HTMLInputElement[] = [];
+  private converters: Array<BaseConverter> = [];
 
-	public main(main: HTMLElement, infoElement?: HTMLElement): void {
-		if (!main) {
-			throw new Error("main element not found");
-		}
+  public main(main: HTMLElement, infoElement?: HTMLElement): void {
+    if (!main) {
+      throw new Error("main element not found");
+    }
 
-		this.converters.push(
-			new BinaryConverter(),
-			new DecimalConverter(),
-			new HexadecimalConverter(),
-			new OctalConverter(),
-		);
+    this.converters.push(
+      new BinaryConverter(),
+      new DecimalConverter(),
+      new HexadecimalConverter(),
+      new OctalConverter(),
+    );
 
-		for (const converter of this.converters) {
-			const label = Object.assign(document.createElement("label"), {
-				htmlFor: converter.constructor.name,
-				innerText: converter.constructor.name.replace("Converter", ""),
-				onclick: () => copyContentToClipboard(input, infoElement),
-			});
+    for (const converter of this.converters) {
+      const label = Object.assign(document.createElement("label"), {
+        htmlFor: converter.getName(),
+        innerText: converter.getName(),
+        onclick: () => copyContentToClipboard(input, infoElement),
+      });
 
-			label.style.setProperty("--bg", converter.getColor());
+      label.style.setProperty("--bg", converter.getColor());
 
-			const input = Object.assign(document.createElement("input"), {
-				id: converter.constructor.name,
-				placeholder: "0",
-				onkeydown: isImplHasInputValidation(converter)
-					? converter.validateInput
-					: () => {},
-				onkeyup: (e: KeyboardEvent) => {
-					const target = e.target as HTMLInputElement;
-					converter.setValue(Number(target.value));
-					this.calculateEach(e, converter);
-				},
-			});
+      const input = Object.assign(document.createElement("input"), {
+        id: converter.getName(),
+        placeholder: "0",
+        onkeydown: isImplHasInputValidation(converter)
+          ? converter.validateInput
+          : () => { },
+        onkeyup: (e: KeyboardEvent) => {
+          const target = e.target as HTMLInputElement;
+          converter.setValue(Number(target.value));
+          this.calculateEach(e, converter);
+        },
+      });
 
-			const div = Object.assign(document.createElement("div"), {});
+      const div = Object.assign(document.createElement("div"), {});
 
-			div.appendChild(input);
-			div.appendChild(label);
+      div.appendChild(input);
+      div.appendChild(label);
 
-			this.inputRegistry.push(input);
+      this.inputRegistry.push(input);
 
-			main!.appendChild(div);
-		}
-	}
+      main!.appendChild(div);
+    }
+  }
 
-	private calculateEach<T extends BaseConverter>(
-		event: KeyboardEvent,
-		from: T,
-	): void {
-		const target = event.target as HTMLInputElement;
+  private calculateEach<T extends BaseConverter>(
+    event: KeyboardEvent,
+    from: T,
+  ): void {
+    const target = event.target as HTMLInputElement;
 
-		if (!target.value) target.value = "";
+    if (!target.value) target.value = "";
 
-		for (const [index, input] of this.inputRegistry.entries()) {
-			// skip self calculation
-			if (input.id === target.id) continue;
+    for (const [index, input] of this.inputRegistry.entries()) {
+      // skip self calculation
+      if (input.id === target.id) continue;
 
-			input.value = from.convertTo(this.converters.at(index)!);
-		}
-	}
+      input.value = from.convertTo(this.converters.at(index)!);
+    }
+  }
 }
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
@@ -86,6 +86,6 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
 const main = new Main();
 
 main.main(
-	document.querySelector<HTMLDivElement>("#main")!,
-	document.querySelector<HTMLDivElement>("#info")!,
+  document.querySelector<HTMLDivElement>("#main")!,
+  document.querySelector<HTMLDivElement>("#info")!,
 );

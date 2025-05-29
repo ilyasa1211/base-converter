@@ -2,28 +2,29 @@ import { type HasInputValidation, addValidInput } from "../validators/input";
 import BaseConverter from "./BaseConverter";
 
 export default class HexadecimalConverter
-  extends BaseConverter
-  implements HasInputValidation {
-  public constructor() {
-    super("Hexadecimal", 16, "0x", "#B3C99C");
-  }
+	extends BaseConverter
+	implements HasInputValidation
+{
+	public constructor() {
+		super("Hexadecimal", 16, "0x", "#B3C99C");
+	}
 
-  public validateInput(event: KeyboardEvent): boolean {
-    if (
-      event.ctrlKey &&
-      (event.key === "v" || event.key === "c" || event.key === "a")
-    ) {
-      return true;
-    }
+	public validateInput(event: KeyboardEvent): boolean {
+		if (
+			event.ctrlKey &&
+			(event.key === "v" || event.key === "c" || event.key === "a")
+		) {
+			return true;
+		}
 
-    (event.target as HTMLInputElement).value.replace(/^0+/, "");
+		(event.target as HTMLInputElement).value.replace(/^0+/, "");
 
-    const isValid = addValidInput(/[\da-f]/).test(event.key);
+		const isValid = addValidInput(/[\da-f]/).test(event.key);
 
-    if (!isValid) {
-      event.preventDefault();
-    }
+		if (!isValid) {
+			event.preventDefault();
+		}
 
-    return isValid;
-  }
+		return isValid;
+	}
 }
