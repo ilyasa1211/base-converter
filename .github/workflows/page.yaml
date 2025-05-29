@@ -1,3 +1,8 @@
+on:
+  push:
+    branches:
+      - main
+
 jobs: 
   build:
     # Specify runner +  build & upload the static files as an artifact
