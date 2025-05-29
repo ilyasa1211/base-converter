@@ -21,7 +21,7 @@ jobs:
         id: build
         run: |
           mkdir dist
-          docker buildx build --tag=base-converter:latest .
+          docker buildx build --tag=base-converter:latest --load .
           docker run --mount=type=bind,source=./dist,target=/app/dist base-converter npm run build
 
       - name: Upload static files as artifact
