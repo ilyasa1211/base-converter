@@ -9,7 +9,7 @@ USER node
 WORKDIR /app
 
 RUN --mount=source=package.json,target=package.json \
-  --mount=source=pnpm-lock.json,target=pnpm-lock.json \
+  --mount=source=pnpm-lock.yaml,target=pnpm-lock.yaml \
   pnpm i
 
 COPY . .
