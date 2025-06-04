@@ -1,5 +1,5 @@
 export default abstract class BaseConverter {
-	private value?: number;
+	private value?: string;
 	private readonly name: string;
 	private readonly base: number;
 	private readonly prefix: string;

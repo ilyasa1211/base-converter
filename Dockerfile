@@ -1,12 +1,16 @@
 FROM node:24-alpine
 
+RUN corepack enable pnpm && \
+  corepack prepare pnpm@latest --activate && \
+  yes | pnpm -v
+
 USER node
 
 WORKDIR /app
 
 RUN --mount=source=package.json,target=package.json \
   --mount=source=package-lock.json,target=package-lock.json \
-  npm ci
+  pnpm i
 
 COPY . .
 
